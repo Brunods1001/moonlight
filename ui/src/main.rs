@@ -199,7 +199,7 @@ fn APIAction() -> impl IntoView {
 }
 
 #[component]
-fn Home() -> impl IntoView {
+fn LeptosExamples() -> impl IntoView {
     let (count, set_count) = create_signal(0);
 
     create_effect(move |_| {
@@ -331,20 +331,28 @@ fn MetaExamples() -> impl IntoView {
 }
 
 #[component]
+fn Home() -> impl IntoView {
+    view! {
+        <h1>Brunods</h1>
+    }
+}
+
+#[component]
 fn App() -> impl IntoView {
     view! {
         <Router>
             <nav>
                 <ul>
-                    <li><a href="/">"Home"</a></li>
-                    <li><a href="/async">"Async"</a></li>
+                    <li><a href="/leptos/">"LeptosExamples"</a></li>
+                    <li><a href="/leptos/async">"Async"</a></li>
                     <li><a href="/meta">"Meta"</a></li>
                 </ul>
             </nav>
             <main class="my-0 mx-auto max-w-3xl">
                 <Routes>
-                    <Route path="/" view=Home/>
-                    <Route path="/async" view=AsyncExamples/>
+                    <Route path="/" view=Home />
+                    <Route path="/leptos/" view=LeptosExamples/>
+                    <Route path="/leptos/async" view=AsyncExamples/>
                     <Route path="/meta" view=MetaExamples/>
                 </Routes>
             </main>
