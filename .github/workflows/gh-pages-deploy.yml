@@ -38,10 +38,10 @@ Github-Pages-Release:
         components: clippy, rustfmt
 
     - name: Add WASM target
-        run: rustup target add wasm32-unknown-unknown
+      run: rustup target add wasm32-unknown-unknown
 
     - name: lint
-        run: cargo clippy & cargo fmt
+      run: cargo clippy & cargo fmt
 
 
     # If using tailwind...
@@ -50,7 +50,7 @@ Github-Pages-Release:
 
 
     - name: Download and install Trunk binary
-        run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+      run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
     - name: Build with Trunk
         # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
@@ -71,18 +71,18 @@ Github-Pages-Release:
     # Deploy with Github Static Pages
 
     - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-        enablement: true
-        # token:
+      uses: actions/configure-pages@v4
+      with:
+      enablement: true
+      # token:
 
     - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
+      uses: actions/upload-pages-artifact@v2
+      with:
         # Upload dist dir
         path: './dist'
 
     - name: Deploy to GitHub Pages 🚀
-        id: deployment
-        uses: actions/deploy-pages@v3
+      id: deployment
+      uses: actions/deploy-pages@v3
 
