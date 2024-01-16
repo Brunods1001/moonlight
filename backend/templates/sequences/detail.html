@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="sequence-detail">
+    <h2>{{ sequence.name }}</h2>
+    <p>{{ sequence.description }}</p>
+</div>
+<a href="{{ edit_url }}">Edit sequence</a>
+<a href="{{ delete_url }}">Delete sequence</a>
+<a href="{{ list_url }}">Back to list</a>
+{% endblock %}

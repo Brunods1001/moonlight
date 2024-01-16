@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<h1 class="px-4 mb-10">Sequences</h1>
+
+
+<!-- toolbox -->
+{% include "toolbox.html" %}
+
+<div id="customContextMenu" class="hidden absolute z-50 w-32 py-1 bg-white rounded-md shadow-lg">
+    <a href="#" class="right-click-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Option 1</a>
+    <a href="#" class="right-click-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Option 2</a>
+    <!-- More menu items... -->
+</div>
+
+<div class="flex flex-col relative">
+    <div class="-m-1.5 overflow-x-auto">
+        <div class="p-1.5 min-w-full inline-block align-middle">
+            <div class="">
+                <table id="sequence-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="sticky-col">
+                                <input type="checkbox" id="selectAll" onchange="highlightAllRows(this)">
+                            </th>
+                            {% for position in positions %}
+                            <th scope="col">
+                                <div class="position">
+                                    {{ position }}
+                                </div>
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sequence_url in sequence_urls %}
+                        <tr>
+                            <td class="sticky-col">
+                                <input type="checkbox" class="itemCheckbox" name="selectedItems"
+                                    onchange="highlightRow(this)"
+                                    value="{{ sequence_url.sequence.id }}">
+                            <a href="{{ sequence_url.url }}">{{ sequence_url.sequence.name }}</a></td>
+                            {% for amino_acid in sequence_url.sequence.amino_acids %}
+                            <td selected>
+                                <div class="hs-tooltip">
+                                    <div 
+                                        id="amino-acid-{{ amino_acid.id }}"
+                                        class="amino-acid hs-tooltip-toggle"
+                                    >
+                                        {{ amino_acid.amino_acid }}
+                                    </div>
+                                    <span
+                                        class="my-10 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700"
+                                        role="tooltip">
+                                        Right click to see options
+                                    </span>
+                                </div>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    (function () {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const checkboxTable = document.getElementById('sequence-table');
+
+        checkboxTable.addEventListener('change', function (event) {
+            if (event.target.matches('.itemCheckbox')) {
+                const checkboxes = checkboxTable.querySelectorAll('.itemCheckbox');
+                const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                document.dispatchEvent(new CustomEvent('checkboxes-updated', {detail: {anyChecked}}));
+            }
+        });
+
+        selectAllCheckbox.addEventListener('change', function () {
+            const checkboxes = checkboxTable.querySelectorAll('.itemCheckbox');
+            let anyChecked = false;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+                anyChecked = anyChecked || checkbox.checked;
+            });
+            document.dispatchEvent(new CustomEvent('checkboxes-updated', {detail: {anyChecked}}));
+        });
+    })();
+
+
+    // right click menu
+    (function (event) {
+        const customContextMenu = document.getElementById('customContextMenu');
+        const aminoAcids = document.querySelectorAll('.amino-acid');
+
+        aminoAcids.forEach(aminoAcid => {
+            aminoAcid.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                const target = event.target;
+                customContextMenu.style.top = `${event.pageY}px`;
+                customContextMenu.style.left = `${event.pageX}px`;
+
+                customContextMenu.classList.remove('hidden');
+            });
+        });
+        document.addEventListener('click', () => {
+            customContextMenu.classList.add('hidden');
+        });
+    })();
+
+    // add event listeners to amino acids
+    (function (event) {
+        const aminoAcids = document.querySelectorAll('.amino-acid');
+        aminoAcids.forEach(aminoAcid => {
+            // add on hover event listener to dispatch event with the position of the amino acid
+            aminoAcid.addEventListener('mouseover', (event) => {
+                const target = event.target;
+                const aminoAcidId = target.id.split('-')[2];
+                const aminoAcidPosition = target.parentElement.parentElement.cellIndex;
+                console.log("id", aminoAcidId);
+                console.log("position", aminoAcidPosition);
+                document.dispatchEvent(new CustomEvent('amino-acid-mouseover-event', {detail: {aminoAcidId, aminoAcidPosition}}));
+            });
+            aminoAcid.addEventListener('mouseout', (event) => {
+                const target = event.target;
+                const aminoAcidId = target.id.split('-')[2];
+                const aminoAcidPosition = target.parentElement.parentElement.cellIndex;
+                console.log("id", aminoAcidId);
+                console.log("position", aminoAcidPosition);
+                document.dispatchEvent(new CustomEvent('amino-acid-mouseout-event', {detail: {aminoAcidId, aminoAcidPosition}}));
+            });
+
+
+        });
+    })();
+
+    // add a listener to add a class to the amino acid if amino-acid-mouseover is dispatched
+    (function (event) {
+        const aminoAcids = document.querySelectorAll('.amino-acid');
+        document.addEventListener('amino-acid-mouseover-event', (event) => {
+            console.log("amino-acid-mouseover-event", event.detail);
+            const aminoAcidId = event.detail.aminoAcidId;
+            const aminoAcidPosition = event.detail.aminoAcidPosition;
+            aminoAcids.forEach(aminoAcid => {
+                if (aminoAcid.id.split('-')[2] === aminoAcidId) {
+                    aminoAcid.classList.add('amino-acid-mouseover-event');
+                } else {
+                    aminoAcid.classList.remove('amino-acid-mouseover-event');
+                }
+            });
+        });
+        document.addEventListener('amino-acid-mouseout-event', (event) => {
+            console.log("amino-acid-mouseout-event", event.detail);
+            const aminoAcidId = event.detail.aminoAcidId;
+            const aminoAcidPosition = event.detail.aminoAcidPosition;
+            aminoAcids.forEach(aminoAcid => {
+                if (aminoAcid.id.split('-')[2] === aminoAcidId) {
+                    aminoAcid.classList.remove('amino-acid-mouseover-event');
+                }
+            });
+        });
+    })();
+
+    // checkbox change handler highlight row
+    function highlightRow(checkbox) {
+        const row = checkbox.parentElement.parentElement;
+        if (checkbox.checked) {
+            row.classList.add('bg-gray-100');
+        } else {
+            row.classList.remove('bg-gray-100');
+        }
+    }
+
+    // handler for select all to highlight all rows
+    function highlightAllRows(checkbox) {
+        const table = document.getElementById('sequence-table');
+        const tbody = table.querySelector('tbody');
+        const rows = tbody.querySelectorAll('tr');
+        if (checkbox.checked) {
+            rows.forEach(row => row.classList.add('bg-gray-100'));
+        } else {
+            rows.forEach(row => row.classList.remove('bg-gray-100'));
+        }
+    }
+
+</script>
+
+{% endblock %}

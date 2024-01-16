@@ -1,0 +1,55 @@
+<!-- 
+A toolbox containing functions for the user to apply to any checked sequence
+in the list of sequences.
+It will sit above the list of sequences.
+-->
+<div id="toolbox" class="p-4 bg-white dark:bg-slate-800 shadow-sm">
+    <div id="toolbox-buttons" class="">
+        <div class="flex flex-col sm:inline-flex sm:flex-row rounded-sm shadow-sm">
+            <button disabled
+                class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400">
+                <span class="text-slate-400">Align</span>
+            </button>
+        </div>
+        <div class="flex flex-col sm:inline-flex sm:flex-row rounded-sm shadow-sm">
+            <button type="button"
+                disabled
+                class="py-3 px-4 inline-flex items-center gap-x-2 -mt-px -ms-px first:rounded-t-md last:rounded-b-md sm:first:rounded-s-md sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-md text-sm font-medium focus:z-10 border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                Item 1
+            </button>
+            <button type="button"
+                disabled
+                class="py-3 px-4 inline-flex items-center gap-x-2 -mt-px -ms-px first:rounded-t-md last:rounded-b-md sm:first:rounded-s-md sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-md text-sm font-medium focus:z-10 border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                Item 2
+            </button>
+            <button type="button"
+                disabled
+                class="py-3 px-4 inline-flex items-center gap-x-2 -mt-px -ms-px first:rounded-t-md last:rounded-b-md sm:first:rounded-s-md sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-md text-sm font-medium focus:z-10 border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                Item 3
+            </button>
+        <span id="toolbox-message" 
+            class="inline-flex items-center px-3 py-0.5 text-sm font-medium text-slate-400">
+            Select one or more sequences to enable the toolbox.</span>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    (function () {
+        const toolboxButtons = document.getElementById('toolbox-buttons');
+        const toolboxMessage = document.getElementById('toolbox-message');
+        const buttons = toolboxButtons.querySelectorAll('button');
+
+        document.addEventListener('checkboxes-updated', function (event) {
+            console.log(event.detail);
+            const anyChecked = event.detail.anyChecked;
+            if (anyChecked) {
+                toolboxMessage.classList.add('hidden');
+            } else {
+                toolboxMessage.classList.remove('hidden');
+            }
+            buttons.forEach(button => button.disabled = !anyChecked);
+        });
+    })();
+</script>

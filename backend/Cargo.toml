@@ -1,0 +1,20 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+askama = { version = "0.12.1", features = ["with-axum"] }
+axum = { version = "0.7.4", features = ["json", "tokio", "tower-log", "tracing", "ws", "form", "query", "original-uri", "http2", "multipart"] }
+tokio = { version = "1.35.1", features = ["full"] }
+sqlx = { version = "0.7.3", features = ["sqlite", "json", "time", "macros", "runtime-tokio", "tls-rustls"] }
+askama_axum = "0.4.0"
+tower-http = { version = "0.5.0", features = ["fs"] }
+
+[general]
+# Directories to search for templates, relative to the crate root.
+dirs = ["templates"]
+# Unless you add a `-` in a block, whitespace characters won't be trimmed.
+whitespace = "preserve"

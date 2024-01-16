@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<h1 class="header-1">{{ name }} makes brownies for bubby</h1>
+ 
+<div x-data="{ open: false }">
+    <button @click="open = !open">Expand</button>
+ 
+    <span x-show="open">
+        Content...
+    </span>
+</div>
+{% endblock %}
